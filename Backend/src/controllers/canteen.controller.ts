@@ -1,24 +1,29 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
+import cloudinary from "../utils/cloudinaryConfig";
 
 interface UploadMenuRequestBody {
   canteenName: string;
-  menuUrl: string;
 }
 
 
 export const uploadMenu = async(req: Request, res: Response) => {
-    const {canteenName, menuUrl} = req.body ;
+    const {canteenName} = req.body as UploadMenuRequestBody;
     const userId = req.userId;
     
-    if (!canteenName || !menuUrl) {
-        return res.status(400).json({ message: "Canteen name and menu URL are required" });
+    if (!canteenName || !req.file) {
+        return res.status(400).json({ message: "Canteen name and image file are required" });
     }
 
     try {
         const user = await prisma.user.findUnique({ where: { id: userId } });
-        if (!user || user.role !== "ADMIN") return res.status(404).json({ message: "User not found." });
-        
+        if (!user || user.role !== "ADMIN") return res.status(403).json({ message: "Not Authorized" });
+
+        const { secure_url: menuUrl } = await cloudinary.uploader.upload(req.file.path, {
+            folder: "canteen_menus",
+            resource_type: "image"
+        });
+
         const canteen = await prisma.canteen.findUnique({ where: { canteenName } });
 
         if(canteen){
