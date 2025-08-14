@@ -21,6 +21,3 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
      return
   }
 }
-
-    //fix this extend the express request type to include userId
-    //ts ignore bhi dal
