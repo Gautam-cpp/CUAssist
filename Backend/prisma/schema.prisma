@@ -42,8 +42,10 @@ model User {
   items          Item[]
   itemRequests   ItemRequest[]
   canteenReviews CanteenReview[]
-  notes          Note[]
   messagesSent   Message[]
+  notes          Note[]      
+  reviewedNotes  Note[]          @relation("NoteReviewer")
+
 }
 
 enum Role {
@@ -131,4 +133,15 @@ model Note {
   uploaderId String
   uploader   User     @relation(fields: [uploaderId], references: [id])
   createdAt  DateTime @default(now())
+
+  status     NoteStatus  @default(PENDING)
+  reviewedBy String?
+  reviewer   User?       @relation("NoteReviewer", fields: [reviewedBy], references: [id])
+  rejectionReason String?
+}
+
+enum NoteStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
