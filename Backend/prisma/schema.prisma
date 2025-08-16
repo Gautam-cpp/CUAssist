@@ -37,6 +37,8 @@ model User {
   OTPRequestedAt DateTime?       @default(now())
   OTPExpiry      DateTime?
 
+  seniorApplicationStatus SeniorApplicationStatus @default(NOT_APPLIED)
+
   // Relations
   senior         Senior?
   items          Item[]
@@ -46,6 +48,13 @@ model User {
   notes          Note[]      
   reviewedNotes  Note[]          @relation("NoteReviewer")
 
+}
+
+enum SeniorApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  NOT_APPLIED
 }
 
 enum Role {
