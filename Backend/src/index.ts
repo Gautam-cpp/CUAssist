@@ -5,6 +5,7 @@ import otpRoutes from "./routes/otp.route";
 import canteenRoutes from "./routes/canteen.route"; 
 import notesRoutes from "./routes/notes.route";
 import guidanceRoutes from "./routes/guidance.route";
+import seniorRequestRoutes from "./routes/seniorRequest.route";
 
 const app = express();
 
@@ -16,5 +17,6 @@ app.use('/api/v1/otp', otpRoutes);
 app.use('/api/v1/canteen', canteenRoutes );
 app.use('/api/v1/notes', notesRoutes);
 app.use('/api/v1/guidance', guidanceRoutes);
+app.use('/api/v1/senior-request', seniorRequestRoutes);
 
 app.listen(5000);
