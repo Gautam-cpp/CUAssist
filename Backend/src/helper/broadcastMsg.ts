@@ -3,12 +3,12 @@ import { Server as WebSocketServer, WebSocket } from "ws";
 import {app} from "../index"; 
 import { setupWebSocket } from "../utils/wsServer"; 
 
-const PORT = 5000;
+const PORT = 5001;
 
 const server = http.createServer(app);
 
 server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`WS Server listening on port ${PORT}`);
 });
 
 
