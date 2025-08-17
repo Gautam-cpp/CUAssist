@@ -3,31 +3,15 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/useAuth';
 
-// Layout Components
-// import Layout from './components/Layout/Layout';
-// import ProtectedRoute from './components/ProtectedRoute';
+
 
 // Auth Components
 import LoginForm from './components/Auth/LoginForm';
 import SignupForm from './components/Auth/SignUpForm';
 import OTPVerification from './components/Auth/OTPVerification';
+import Dashboard from './components/Dashboard/DashBoard';
 
-// Main Components
-// import Dashboard from './components/Dashboard/Dashboard';
-// import CanteenList from './components/Canteen/CanteenList';
-// import CanteenDetail from './components/Canteen/CanteenDetail';
-// import NotesList from './components/Notes/NotesList';
-// import NotesUpload from './components/Notes/NotesUpload';
-// import MyUploads from './components/Notes/MyUploads';
-// import SubjectNotes from './components/Notes/SubjectNotes';
-// import GuidanceChat from './components/Guidance/GuidanceChat';
-// import SeniorRequestForm from './components/SeniorRequest/SeniorRequestForm';
 
-// // Admin Components
-// import AdminDashboard from './components/Admin/AdminDashboard';
-// import NotesManagement from './components/Admin/NotesManagement';
-// import SeniorRequestManagement from './components/Admin/SeniorRequestManagement';
-// import CanteenMenuUpload from './components/Admin/CanteenMenuUpload';
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
@@ -47,7 +31,9 @@ const AppContent: React.FC = () => {
       <Route path="/signup" element={!user ? <SignupForm /> : <Navigate to="/dashboard" />} />
       <Route path="/verify-otp" element={!user ? <OTPVerification /> : <Navigate to="/dashboard" />} />
       
-      
+      <Route index element={<Navigate to="/dashboard" replace />} />
+      <Route path="dashboard" element={<Dashboard />} />
+        
       {/* <Route path="*" element={<Navigate to="/dashboard" replace />} /> */}
     </Routes>
   );
