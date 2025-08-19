@@ -64,7 +64,7 @@ const AppContent: React.FC = () => {
         <Route path="notes" element={<NotesList />} />
         <Route path="notes/upload" element={<NotesUpload />} />
         <Route path="notes/my-uploads" element={<MyUploads />} />
-        <Route path="notes/:semester/:subject" element={<SubjectNotes />} />
+        <Route path="subject/:semester/:subject" element={<SubjectNotes />} />
         
         {/* Guidance Routes */}
         <Route path="guidance" element={<GuidanceChat />} />

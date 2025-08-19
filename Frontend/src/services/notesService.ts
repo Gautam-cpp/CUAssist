@@ -15,7 +15,7 @@ export const notesService = {
   },
 
   getNotesBySubject: async (semester: number, subject: string): Promise<{ notes: Note[] }> => {
-    const response = await api.get(`/notes/notes/${semester}/${subject}`);
+    const response = await api.get(`/notes/subject/${semester}/${subject}`);
     return response.data as { notes: Note[] } ;
   },
 

@@ -3,11 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import { notesService } from '../../services/notesService';
 import type { Note } from '../../types';
 import { ArrowLeft, Download, User, Calendar, FileText } from 'lucide-react';
+import { subjects } from '../../lib/subjects';
 
 const SubjectNotes: React.FC = () => {
   const { semester, subject } = useParams<{ semester: string; subject: string }>();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const subjectName = subjects.find((sub) => sub.code === subject)?.name;
 
   useEffect(() => {
     if (semester && subject) {
@@ -32,7 +35,7 @@ const SubjectNotes: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
       </div>
     );
   }
@@ -48,7 +51,7 @@ const SubjectNotes: React.FC = () => {
         </Link>
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            {subject} Notes
+            {subjectName} Notes
           </h1>
           <p className="text-gray-600">Semester {semester}</p>
         </div>
@@ -59,14 +62,14 @@ const SubjectNotes: React.FC = () => {
           {notes.map((note) => (
             <div key={note.id} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between mb-4">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <FileText className="h-6 w-6 text-blue-600" />
+                <div className="p-3 bg-red-100 rounded-lg">
+                  <FileText className="h-6 w-6 text-red-600" />
                 </div>
                 <a
                   href={note.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
                   <Download className="h-5 w-5" />
                 </a>
@@ -92,7 +95,7 @@ const SubjectNotes: React.FC = () => {
                   href={note.fileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-center block"
+                  className="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium text-center block"
                 >
                   Download PDF
                 </a>
@@ -109,7 +112,7 @@ const SubjectNotes: React.FC = () => {
           </p>
           <Link
             to="/notes/upload"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
           >
             Upload Notes
           </Link>

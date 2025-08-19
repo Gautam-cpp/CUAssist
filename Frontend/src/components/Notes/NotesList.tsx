@@ -1,19 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Upload, Clock, CheckCircle } from 'lucide-react';
-
-const subjects = [
-  { name: 'Mathematics', code: 'MATH', semester: [1, 2, 3, 4] },
-  { name: 'Physics', code: 'PHY', semester: [1, 2] },
-  { name: 'Chemistry', code: 'CHEM', semester: [1, 2] },
-  { name: 'Computer Science', code: 'CS', semester: [1, 2, 3, 4, 5, 6, 7, 8] },
-  { name: 'Electronics', code: 'ECE', semester: [1, 2, 3, 4, 5, 6, 7, 8] },
-  { name: 'Mechanical Engineering', code: 'ME', semester: [1, 2, 3, 4, 5, 6, 7, 8] },
-  { name: 'English', code: 'ENG', semester: [1, 2] },
-  { name: 'Data Structures', code: 'DS', semester: [3, 4] },
-  { name: 'Algorithms', code: 'ALGO', semester: [4, 5] },
-  { name: 'Database Management', code: 'DBMS', semester: [5, 6] },
-];
+import { subjects } from '../../lib/subjects';
 
 const NotesList: React.FC = () => {
   const [selectedSemester, setSelectedSemester] = useState<number>(1);
@@ -29,14 +17,14 @@ const NotesList: React.FC = () => {
         <div className="flex space-x-4">
           <Link
             to="/notes/upload"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center space-x-2"
+            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center space-x-2"
           >
             <Upload className="h-5 w-5" />
             <span>Upload Notes</span>
           </Link>
           <Link
             to="/notes/my-uploads"
-            className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors font-medium flex items-center space-x-2"
+            className="border border-red-600 text-red-600 px-6 py-3 rounded-lg hover:bg-red-50 transition-colors font-medium flex items-center space-x-2"
           >
             <Clock className="h-5 w-5" />
             <span>My Uploads</span>
@@ -54,7 +42,7 @@ const NotesList: React.FC = () => {
               onClick={() => setSelectedSemester(semester)}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedSemester === semester
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-red-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -73,12 +61,12 @@ const NotesList: React.FC = () => {
           {filteredSubjects.map((subject) => (
             <Link
               key={`${subject.code}-${selectedSemester}`}
-              to={`/notes/${selectedSemester}/${subject.code}`}
-              className="group bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-blue-200"
+              to={`/subject/${selectedSemester}/${subject.code}`}
+              className="group bg-white rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-red-200"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <BookOpen className="h-6 w-6 text-blue-600" />
+                <div className="p-3 bg-red-100 rounded-lg">
+                  <BookOpen className="h-6 w-6 text-red-600" />
                 </div>
                 <div className="flex items-center text-green-600">
                   <CheckCircle className="h-5 w-5 mr-1" />
@@ -86,7 +74,7 @@ const NotesList: React.FC = () => {
                 </div>
               </div>
               
-              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors mb-2">
                 {subject.name}
               </h3>
               
@@ -96,7 +84,7 @@ const NotesList: React.FC = () => {
               
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <span>Notes available</span>
-                <span className="text-blue-600 font-medium group-hover:text-blue-700">
+                <span className="text-red-600 font-medium group-hover:text-red-700">
                   Browse →
                 </span>
               </div>
@@ -113,9 +101,9 @@ const NotesList: React.FC = () => {
       )}
 
       {/* Stats Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-r from-red-600 to-orange-600 rounded-2xl p-8 text-white">
         <h3 className="text-2xl font-bold mb-4">Contribute to the Community!</h3>
-        <p className="text-blue-100 mb-6">
+        <p className="text-red-100 mb-6">
           Share your notes and help fellow students succeed. Your contributions make a difference.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -127,7 +115,7 @@ const NotesList: React.FC = () => {
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="text-blue-100 text-sm">{stat.label}</div>
+              <div className="text-red-100 text-sm">{stat.label}</div>
             </div>
           ))}
         </div>

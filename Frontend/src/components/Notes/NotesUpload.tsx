@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { notesService } from '../../services/notesService';
 import { Upload, FileText, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { subjects } from '../../lib/subjects';
 
 const NotesUpload: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
 
   const selectedFile = watch('pdf')?.[0];
+  const selectedSubject = watch('subject');
+
+  
+  useEffect(() => {
+    if (selectedSubject) {
+      const subject = subjects.find(s => s.code === selectedSubject);
+      if (subject && subject.semester) {
+        setValue('semester', subject.semester[0]);
+      }
+    }
+  }, [selectedSubject, setValue]);
 
   const onSubmit = async (data: any) => {
     setLoading(true);
@@ -78,36 +90,37 @@ const NotesUpload: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Semester *
+                Subject Name *
               </label>
               <select
-                {...register('semester', { required: 'Semester is required' })}
+                {...register('subject', { required: 'Subject is required' })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="">Select Semester</option>
-                {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
-                  <option key={sem} value={sem}>
-                    Semester {sem}
+                <option value="">Select Subject</option>
+                {subjects.map((subject) => (
+                  <option key={subject.code} value={subject.code}>
+                    {subject.name}
                   </option>
                 ))}
               </select>
-              {errors.semester && (
-                <p className="mt-1 text-sm text-red-600">{errors.semester.message as string}</p>
+              {errors.subject && (
+                <p className="mt-1 text-sm text-red-600">{errors.subject.message as string}</p>
               )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Subject Code *
+                Semester *
               </label>
               <input
-                {...register('subject', { required: 'Subject is required' })}
+                {...register('semester', { required: 'Semester is required' })}
                 type="text"
-                placeholder="e.g., CS, MATH, PHY"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                readOnly
+                placeholder="Auto-detected from subject"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
               />
-              {errors.subject && (
-                <p className="mt-1 text-sm text-red-600">{errors.subject.message as string}</p>
+              {errors.semester && (
+                <p className="mt-1 text-sm text-red-600">{errors.semester.message as string}</p>
               )}
             </div>
           </div>
@@ -123,11 +136,11 @@ const NotesUpload: React.FC = () => {
                   validate: {
                     fileType: (files) => {
                       if (!files[0]) return true;
-                      return files[0].type === 'application/pdf' || 'Only PDF files are allowed';
+                      return files.type === 'application/pdf' || 'Only PDF files are allowed';
                     },
                     fileSize: (files) => {
-                      if (!files[0]) return true;
-                      return files[0].size <= 10 * 1024 * 1024 || 'File size must be less than 10MB';
+                      if (!files) return true;
+                      return files.size <= 10 * 1024 * 1024 || 'File size must be less than 10MB';
                     },
                   },
                 })}
@@ -162,7 +175,7 @@ const NotesUpload: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:opacity-50"
             >
               {loading ? 'Uploading...' : 'Upload Notes'}
             </button>

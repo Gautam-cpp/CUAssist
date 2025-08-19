@@ -26,7 +26,7 @@ const MyUploads: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'APPROVED':
-        return <CheckCircle className="h-5 w-5 text-green-600" />;
+        return <CheckCircle className="h-5 w-5 text-red-600" />;
       case 'REJECTED':
         return <XCircle className="h-5 w-5 text-red-600" />;
       default:
@@ -37,7 +37,7 @@ const MyUploads: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'APPROVED':
-        return 'bg-green-50 text-green-700 border-green-200';
+        return 'bg-red-50 text-red-700 border-red-200';
       case 'REJECTED':
         return 'bg-red-50 text-red-700 border-red-200';
       default:
@@ -137,7 +137,7 @@ const MyUploads: React.FC = () => {
               <div className="text-sm text-gray-600">Total Uploads</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-red-600">
                 {notes.filter(n => n.status === 'APPROVED').length}
               </div>
               <div className="text-sm text-gray-600">Approved</div>
