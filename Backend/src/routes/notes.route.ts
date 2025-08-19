@@ -10,6 +10,6 @@ router.post("/upload", authMiddleware, upload.single("pdf"), asyncHandler(upload
 router.post("/admin/approval", authMiddleware, asyncHandler(NotesApprovalReqForAdmin));
 router.get("/user/status", authMiddleware, asyncHandler(showNotesStatusToUploader));
 router.get("/admin/pending", authMiddleware, asyncHandler(showPendingNotesToAdmin));
-router.get("/notes/:semester/:subject", asyncHandler(showNotesbySubject));
+router.get("/subject/:semester/:subject", asyncHandler(showNotesbySubject));
 
 export default router;

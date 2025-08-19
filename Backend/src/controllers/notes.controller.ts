@@ -22,7 +22,7 @@ export const uploadNotes = async (req: Request, res: Response) => {
         const note = await prisma.note.create({
             data: {
                 pdfName,
-                semester,
+                semester: parseInt(semester),
                 subject,
                 fileUrl,
                 uploaderId: userId
@@ -114,26 +114,30 @@ export const showPendingNotesToAdmin = async (req: Request, res: Response) => {
 export const NotesApprovalReqForAdmin = async (req: Request, res: Response) => {
     const {noteId, status, rejectionReason} = req.body;
     const userId = req.userId;
-
+    
     if (!noteId || !status) {
         return res.status(400).json({ message: "Note ID and status are required" });
     }
-
+    
     try {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user || user.role !== "ADMIN") {
             return res.status(403).json({ message: "Not Authorized" });
         }
+        
         const note = await prisma.note.findUnique({ where: { id: noteId } });
         if (!note) {
             return res.status(404).json({ message: "Note not found" });
         }
+        
         if (note.status === "APPROVED") {
             return res.status(400).json({ message: "Note already approved" });
         }
+        
         if (note.status === "REJECTED") {
             return res.status(400).json({ message: "Note already rejected" });
         }
+        
         const updatedNote = await prisma.note.update({
             where: { id: noteId },
             data: {
@@ -142,6 +146,12 @@ export const NotesApprovalReqForAdmin = async (req: Request, res: Response) => {
                 rejectionReason: status === "REJECTED" ? rejectionReason : null
             }
         });
+        
+        return res.status(200).json({ 
+            message: `Note ${status.toLowerCase()} successfully`, 
+            note: updatedNote 
+        });
+        
     } catch (error) {
         console.error("Error approving note:", error);
         return res.status(500).json({ message: "Server error: " + error });
