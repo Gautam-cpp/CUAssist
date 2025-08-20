@@ -5,7 +5,7 @@ import { broadcastMessage } from "../helper/broadcastMsg";
 
 export const message = async (req: Request, res: Response) => {
     const { content, replyToId } = req.body;
-    const userId = req.userId; 
+    const userId = req.userId;
 
     if (!userId || !content) {
         return res.status(400).json({ error: "Missing userId or content" });
@@ -42,6 +42,7 @@ export const message = async (req: Request, res: Response) => {
                         id: true,
                         username: true,
                         profilePic: true,
+                        role: true,
                     },
                 },
                 replyTo: {
@@ -55,12 +56,15 @@ export const message = async (req: Request, res: Response) => {
                         },
                     },
                 },
+                _count: {
+                    select: {
+                        replies: true,
+                    },
+                },
             },
         });
 
-        // Broadcast new message to connected WebSocket clients
         broadcastMessage(newMessage);
-
         return res.status(201).json(newMessage);
     } catch (error) {
         console.error("Error creating message:", error);
@@ -73,6 +77,7 @@ export const getMessages = async (req: Request, res: Response) => {
 
     try {
         const messages = await prisma.message.findMany({
+            where: { replyToId: null }, // Only get top-level messages
             skip: (Number(page) - 1) * Number(limit),
             take: Number(limit),
             orderBy: {
@@ -84,6 +89,7 @@ export const getMessages = async (req: Request, res: Response) => {
                         id: true,
                         username: true,
                         profilePic: true,
+                        role: true,
                     },
                 },
                 replyTo: {
@@ -95,6 +101,26 @@ export const getMessages = async (req: Request, res: Response) => {
                                 username: true,
                             },
                         },
+                    },
+                },
+                replies: {
+                    include: {
+                        sender: {
+                            select: {
+                                id: true,
+                                username: true,
+                                profilePic: true,
+                                role: true,
+                            },
+                        },
+                        _count: {
+                            select: {
+                                replies: true,
+                            },
+                        },
+                    },
+                    orderBy: {
+                        createdAt: "asc",
                     },
                 },
                 _count: {
