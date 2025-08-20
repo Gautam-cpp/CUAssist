@@ -19,28 +19,30 @@ const responseSchema = z.object({
 const outputParser = StructuredOutputParser.fromZodSchema(responseSchema);
 
 const prompt = PromptTemplate.fromTemplate(
-  `You are a moderation bot for an academic platform. Analyze the following message and determine if it is safe or unsafe.
-  
-  A message is considered SAFE only if it meets ALL of the following criteria:
-  1. Contains no harmful, offensive, or inappropriate content
-  2. Is not random or meaningless text
-  3. Is related to academic topics such as:
+  `You are a moderation bot for an academic platform. Analyze the following message and determine if it is SAFE or UNSAFE.
+
+  A message is considered SAFE if it meets ALL of the following conditions:
+  1. Does not contain harmful, offensive, or inappropriate content (e.g., hate speech, slurs, harassment, explicit material).
+  2. Is not random, meaningless, or spam-like text.
+  3. Is related to academic or educational topics such as:
      - Doubts or questions about skills and studies
-     - Educational guidance and advice
+     - Educational guidance, advice, or opinions (including critical/negative advice if constructive)
      - College-related inquiries
      - Academic subjects and learning
      - Career guidance related to education
      - Study methods and techniques
-  
+  4. May include both positive and negative sentiments, as long as they are expressed in a constructive, academic, or advisory manner.
+
   A message is considered UNSAFE if it:
   - Contains harmful, offensive, or inappropriate language
   - Is random, meaningless, or spam-like content
   - Is completely unrelated to academic/educational topics
-  
+
   {format_instructions}
-  
+
   Message: {message}`
 );
+
 
 export async function moderateMessage(message: string) {
     const chain = prompt.pipe(model).pipe(outputParser);
