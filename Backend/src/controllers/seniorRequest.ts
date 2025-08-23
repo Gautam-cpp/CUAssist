@@ -3,51 +3,53 @@ import { prisma } from "../utils/prisma";
 import cloudinary from "../utils/cloudinaryConfig";
 
 export const createSeniorRequest = async (req: Request, res: Response) => {
-    const {experience} = req.body
+    const { experience } = req.body;
     const userId = req.userId;
     const resume = req.file;
 
-    if(!resume || !experience){
+    if (!resume || !experience) {
         return res.status(400).json({ error: "Please provide all required fields." });
     }
 
-    try{
+    try {
         const user = await prisma.user.findUnique({ where: { id: userId } });
-        if(!user){
+        if (!user) {
             return res.status(404).json({ error: "User not found." });
         }
 
-        if(user.seniorApplicationStatus === "PENDING" || user.seniorApplicationStatus === "APPROVED"){
-            return res.status(400).json({ error: "You have already submitted a senior request." });
+        if (user.seniorApplicationStatus === "PENDING") {
+            return res.status(400).json({ error: "You already have a pending request." });
+        }
+        else if (user.seniorApplicationStatus === "APPROVED") {
+            return res.status(400).json({ error: "Your previous request was approved." });
         }
 
-        const {secure_url: resumeUrl} = await cloudinary.uploader.upload(resume.path, {
+        const { secure_url: resumeUrl } = await cloudinary.uploader.upload(resume.path, {
             resource_type: "auto",
-            folder: "resumes"
+            folder: "resumes",
         });
 
         await prisma.user.update({
             where: { id: userId },
-            data: { seniorApplicationStatus: "PENDING" }
+            data: { seniorApplicationStatus: "PENDING" },
         });
 
-        const newRequest = await prisma.senior.create({
-            data: {
-                userId,
-                experience,
-                resumeUrl
-            },
+        const newRequest = await prisma.senior.upsert({
+            where: { userId },
+            update: { experience, resumeUrl },
+            create: { userId, experience, resumeUrl },
         });
 
-        return res.status(201).json({ message: "Senior request created successfully.", request: newRequest });
-
-    } catch(error){
+        return res.status(201).json({
+            message: "Senior request submitted successfully.",
+            request: newRequest,
+        });
+    } catch (error) {
         console.error("Error creating senior request:", error);
         return res.status(500).json({ error: "Server error: " + error });
-
     }
+};
 
-}
 
 // ADMiN
 
@@ -96,7 +98,7 @@ export const approveRejectSeniorRequest = async (req: Request, res: Response) =>
         if (action === "APPROVE") {
             await prisma.user.update({
                 where: { id: requestUserId },
-                data: { seniorApplicationStatus: "APPROVED" }
+                data: { seniorApplicationStatus: "APPROVED", role: "SENIOR" }
             });
             return res.status(200).json({ message: "Senior request approved." });
         } else if (action === "REJECT") {
