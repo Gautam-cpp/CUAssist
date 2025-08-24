@@ -134,13 +134,13 @@ const NotesUpload: React.FC = () => {
                 {...register('pdf', {
                   required: 'PDF file is required',
                   validate: {
-                    fileType: (files) => {
-                      if (!files[0]) return true;
-                      return files.type === 'application/pdf' || 'Only PDF files are allowed';
+                    fileType: (files: FileList) => {
+                      if (!files?.[0]) return true;
+                      return files[0].type === 'application/pdf' || 'Only PDF files are allowed';
                     },
-                    fileSize: (files) => {
-                      if (!files) return true;
-                      return files.size <= 10 * 1024 * 1024 || 'File size must be less than 10MB';
+                    fileSize: (files: FileList) => {
+                      if (!files?.[0]) return true;
+                      return files[0].size <= 10 * 1024 * 1024 || 'File size must be less than 10MB';
                     },
                   },
                 })}
