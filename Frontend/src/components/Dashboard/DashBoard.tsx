@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
           {getGreeting()}, {user?.username}!
         </h1>
         <p className="text-blue-100 text-lg">
-          Welcome back to CU Hub. What would you like to do today?
+          Welcome back to CUAssist. What would you like to do today?
         </p>
         <div className="mt-4 flex items-center space-x-4 text-blue-100">
           <div className="flex items-center space-x-2">
@@ -121,13 +121,13 @@ const Dashboard: React.FC = () => {
             <div className="flex items-start space-x-3">
               <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
               <div>
-                <p className="text-sm text-gray-900">Welcome to CU Hub!</p>
+                <p className="text-sm text-gray-900">Welcome to CUAssist!</p>
                 <p className="text-xs text-gray-500">Just now</p>
               </div>
             </div>
             <div className="text-center text-gray-500 py-8">
               <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p>Start using CU Hub to see your activity here</p>
+              <p>Start using CUAssist to see your activity here</p>
             </div>
           </div>
         </div>

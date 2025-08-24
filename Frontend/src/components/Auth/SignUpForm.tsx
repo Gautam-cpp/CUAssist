@@ -59,7 +59,7 @@ const SignupForm: React.FC = () => {
           <div className="mx-auto h-12 w-12 bg-red-600 rounded-xl flex items-center justify-center mb-4">
             <UserPlus className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Join CU Hub</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Join CUAssist</h1>
           <p className="text-gray-600 mt-2">Create your university account</p>
         </div>
 

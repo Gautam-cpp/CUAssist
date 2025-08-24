@@ -59,7 +59,7 @@ const LoginForm: React.FC = () => {
             <LogIn className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to your CU Hub account</p>
+          <p className="text-gray-600 mt-2">Sign in to your CUAssist account</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
