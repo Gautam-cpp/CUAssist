@@ -124,8 +124,8 @@ export const NotesApprovalReqForAdmin = async (req: Request, res: Response) => {
         if (!user || user.role !== "ADMIN") {
             return res.status(403).json({ message: "Not Authorized" });
         }
-        
-        const note = await prisma.note.findUnique({ where: { id: noteId } });
+
+        const note = await prisma.note.findUnique({ where: { id: parseInt(noteId) } });
         if (!note) {
             return res.status(404).json({ message: "Note not found" });
         }
@@ -139,7 +139,7 @@ export const NotesApprovalReqForAdmin = async (req: Request, res: Response) => {
         }
         
         const updatedNote = await prisma.note.update({
-            where: { id: noteId },
+            where: { id: parseInt(noteId) },
             data: {
                 status,
                 reviewedBy: userId,

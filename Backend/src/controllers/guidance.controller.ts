@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
 import { moderateMessage } from "../helper/moderationMsg";
-import { broadcastMessage } from "../helper/broadcastMsg";
+// import { broadcastMessage } from "../helper/broadcastMsg";
 
 export const message = async (req: Request, res: Response) => {
     const { content, replyToId } = req.body;
@@ -64,7 +64,7 @@ export const message = async (req: Request, res: Response) => {
             },
         });
 
-        broadcastMessage(newMessage);
+        
         return res.status(201).json(newMessage);
     } catch (error) {
         console.error("Error creating message:", error);

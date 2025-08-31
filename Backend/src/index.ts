@@ -9,7 +9,7 @@ import seniorRequestRoutes from "./routes/seniorRequest.route";
 
 export const app = express();
 
-app.use(cors({origin: "http://localhost:5173" , credentials: true}));
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/v1/auth', authRoutes);
@@ -19,4 +19,10 @@ app.use('/api/v1/notes', notesRoutes);
 app.use('/api/v1/guidance', guidanceRoutes);
 app.use('/api/v1/senior-request', seniorRequestRoutes);
 
-app.listen(5000);
+app.listen(5000, "0.0.0.0", () => {
+  console.log("Server started");
+});
+
+app.get("/health", (req, res) => {
+  res.send("Welcome to the CUAssist API");
+});
