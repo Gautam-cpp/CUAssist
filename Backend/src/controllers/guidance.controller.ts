@@ -3,6 +3,28 @@ import { prisma } from "../utils/prisma";
 import { moderateMessage } from "../helper/moderationMsg";
 // import { broadcastMessage } from "../helper/broadcastMsg";
 
+// Reusable Prisma select objects
+const senderSelect = {
+    id: true,
+    username: true,
+    profilePic: true,
+    role: true,
+};
+
+const replyToSelect = {
+    id: true,
+    message: true,
+    sender: {
+        select: {
+            username: true,
+        },
+    },
+};
+
+const repliesCountSelect = {
+    replies: true,
+};
+
 export const message = async (req: Request, res: Response) => {
     const { content, replyToId } = req.body;
     const userId = req.userId;
@@ -38,28 +60,13 @@ export const message = async (req: Request, res: Response) => {
             },
             include: {
                 sender: {
-                    select: {
-                        id: true,
-                        username: true,
-                        profilePic: true,
-                        role: true,
-                    },
+                    select: senderSelect,
                 },
                 replyTo: {
-                    select: {
-                        id: true,
-                        message: true,
-                        sender: {
-                            select: {
-                                username: true,
-                            },
-                        },
-                    },
+                    select: replyToSelect,
                 },
                 _count: {
-                    select: {
-                        replies: true,
-                    },
+                    select: repliesCountSelect,
                 },
             },
         });
@@ -85,38 +92,18 @@ export const getMessages = async (req: Request, res: Response) => {
             },
             include: {
                 sender: {
-                    select: {
-                        id: true,
-                        username: true,
-                        profilePic: true,
-                        role: true,
-                    },
+                    select: senderSelect,
                 },
                 replyTo: {
-                    select: {
-                        id: true,
-                        message: true,
-                        sender: {
-                            select: {
-                                username: true,
-                            },
-                        },
-                    },
+                    select: replyToSelect,
                 },
                 replies: {
                     include: {
                         sender: {
-                            select: {
-                                id: true,
-                                username: true,
-                                profilePic: true,
-                                role: true,
-                            },
+                            select: senderSelect,
                         },
                         _count: {
-                            select: {
-                                replies: true,
-                            },
+                            select: repliesCountSelect,
                         },
                     },
                     orderBy: {
@@ -124,9 +111,7 @@ export const getMessages = async (req: Request, res: Response) => {
                     },
                 },
                 _count: {
-                    select: {
-                        replies: true,
-                    },
+                    select: repliesCountSelect,
                 },
             },
         });

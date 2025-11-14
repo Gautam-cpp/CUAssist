@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
-import cloudinary from "../utils/cloudinaryConfig";
+import { uploadToCloudinary } from "../utils/uploadUtils";
 
 interface UploadMenuRequestBody {
   canteenName: string;
@@ -19,9 +19,9 @@ export const uploadMenu = async(req: Request, res: Response) => {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user || user.role !== "ADMIN") return res.status(403).json({ message: "Not Authorized" });
 
-        const { secure_url: menuUrl } = await cloudinary.uploader.upload(req.file.path, {
+        const { url: menuUrl } = await uploadToCloudinary(req.file.path, {
             folder: "canteen_menus",
-            resource_type: "image"
+            resourceType: "image"
         });
 
         const canteen = await prisma.canteen.findUnique({ where: { canteenName } });

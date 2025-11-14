@@ -2,8 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "../utils/prisma";
-import { sendVerificationEmail } from "../utils/mailer";
-import { generateOTP } from "../helper/otpGenerator"
+import { generateAndSendOTP } from "../utils/otpUtils"
 
 interface SignUpRequestBody {
   username: string;
@@ -49,11 +48,8 @@ export const signup = async (req: Request, res: Response) => {
 
     const existingUser = await prisma.user.findUnique({ where: { UID } });
 
-    const otp = generateOTP();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
-    const OTPRequestedAt= new Date(Date.now())
     const hashedPassword = await bcrypt.hash(password, 10);
-    const email = `${UID.trim().toLowerCase()}@cuchd.in`;
+    const { otp, otpExpiry, otpRequestedAt } = await generateAndSendOTP(UID);
 
     if (existingUser) {
       if (existingUser.isVerified) {
@@ -69,11 +65,10 @@ export const signup = async (req: Request, res: Response) => {
           role,
           OTP: otp,
           OTPExpiry: otpExpiry,
-          OTPRequestedAt
+          OTPRequestedAt: otpRequestedAt
         },
       });
 
-      await sendVerificationEmail(email, otp);
       return res.status(200).json({
         message: "UID already registered but not verified. New OTP sent.",
       });
@@ -91,7 +86,6 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
 
-    await sendVerificationEmail(email, otp);
     res.status(201).json({ message: "User registered. OTP sent to your email." });
   } catch (error) {
     console.error("Signup error:", error);

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
-import { sendVerificationEmail } from "../utils/mailer";
-import { generateOTP } from "../helper/otpGenerator";
+import { generateAndSendOTP } from "../utils/otpUtils";
 
 export const verifyOTP = async (req: Request, res: Response) => {
   try {
@@ -62,17 +61,12 @@ export const resendOTP = async (req: Request, res: Response) => {
       });
     }
 
-    const otp = generateOTP();
-    const otpExpiry = new Date(now.getTime() + 10 * 60 * 1000);
-    const OTPRequestedAt= new Date(now.getTime())
+    const { otp, otpExpiry, otpRequestedAt } = await generateAndSendOTP(UID);
 
     await prisma.user.update({
       where: { UID },
-      data: { OTP: otp, OTPExpiry: otpExpiry, OTPRequestedAt },
+      data: { OTP: otp, OTPExpiry: otpExpiry, OTPRequestedAt: otpRequestedAt },
     });
-
-    const email = `${UID.trim().toLowerCase()}@cuchd.in`;
-    await sendVerificationEmail(email, otp);
 
     return res.status(200).json({ message: "OTP resent to your email." });
   } catch (error) {
