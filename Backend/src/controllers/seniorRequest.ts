@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
-import cloudinary from "../utils/cloudinaryConfig";
+import { uploadToCloudinary } from "../utils/uploadUtils";
 
 export const createSeniorRequest = async (req: Request, res: Response) => {
     const { experience } = req.body;
@@ -24,9 +24,9 @@ export const createSeniorRequest = async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Your previous request was approved." });
         }
 
-        const { secure_url: resumeUrl } = await cloudinary.uploader.upload(resume.path, {
-            resource_type: "auto",
+        const { url: resumeUrl } = await uploadToCloudinary(resume.path, {
             folder: "resumes",
+            resourceType: "auto"
         });
 
         await prisma.user.update({

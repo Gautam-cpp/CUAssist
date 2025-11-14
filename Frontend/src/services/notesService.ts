@@ -1,12 +1,10 @@
 import api from '../config/api';
+import { postFormData } from '../config/apiUtils';
 import type { Note } from '../types';
 
 export const notesService = {
   uploadNotes: async (data: FormData) => {
-    const response = await api.post('/notes/upload', data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
+    return postFormData('/notes/upload', data);
   },
 
   getUserNotesStatus: async (): Promise<{ notes: Note[] }> => {

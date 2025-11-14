@@ -1,12 +1,10 @@
 import api from '../config/api';
+import { postFormData } from '../config/apiUtils';
 import type { CanteenReview } from '../types';
 
 export const canteenService = {
   uploadMenu: async (data: FormData) => {
-    const response = await api.post('/canteen/upload-menu', data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
+    return postFormData('/canteen/upload-menu', data);
   },
 
   getMenu: async (canteenName: string) => {

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../utils/prisma";
-import cloudinary from "../utils/cloudinaryConfig";
+import { uploadToCloudinary } from "../utils/uploadUtils";
 
 export const uploadNotes = async (req: Request, res: Response) => {
     const userId = req.userId;
@@ -14,9 +14,9 @@ export const uploadNotes = async (req: Request, res: Response) => {
         const user = await prisma.user.findUnique({ where: { id: userId } });
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        const { secure_url: fileUrl } = await cloudinary.uploader.upload(req.file.path, {
+        const { url: fileUrl } = await uploadToCloudinary(req.file.path, {
             folder: "notes",
-            resource_type: "raw"
+            resourceType: "raw"
         });
 
         const note = await prisma.note.create({

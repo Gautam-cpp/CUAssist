@@ -1,11 +1,9 @@
 import api from '../config/api';
+import { postFormData } from '../config/apiUtils';
 
 export const seniorService = {
   createRequest: async (data: FormData) => {
-    const response = await api.post('/senior-request/create', data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
+    return postFormData('/senior-request/create', data);
   },
 
   getPendingRequests: async () => {
